@@ -12,7 +12,7 @@ const filteredAppIds = apps
     // https://store.steampowered.com/api/appdetails?appids=57690,57000&filters=price_overview&cc=en
 
 const LIMIT = 1000;
-console.log('filteredAppIds request count', filteredAppIds / LIMIT);
+console.log('filteredAppIds request count', filteredAppIds.length / LIMIT);
 
 const appDetalUrl = `https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.slice(0,LIMIT - 1).join(',')}&filters=price_overview&cc=en`
 
