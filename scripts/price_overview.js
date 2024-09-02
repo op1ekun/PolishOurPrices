@@ -9,7 +9,7 @@ const APP_DETAILS = 'appdetails';
 const APP_IDS = 'appids';
 
 (() => {
-    const appListUrl = `http://api.${BASE_URL}/${APPS}/${APP_LIST}/v2/`;
+    const appListUrl = `//api.${BASE_URL}/${APPS}/${APP_LIST}/v2/`;
 
     fetch(appListUrl, { mode: 'no-cors' })
         .then(response => response.json())
