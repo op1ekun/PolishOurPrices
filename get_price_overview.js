@@ -29,8 +29,8 @@ https.get(appDetalUrl, res => {
   
     res.on('end', () => {
         console.log('Response ended: ');
-        const appsFr = JSON.parse(Buffer.concat(data).toString());    
-        fs.writeFileSync('./price_overview_fr.json', appsFr);    
+        // const appsFr = JSON.parse(Buffer.concat(data).toString());    
+        fs.writeFileSync('./price_overview_fr.json', Buffer.concat(data).toString());    
     });
   }).on('error', err => {
     console.log('Error: ', err.message);
