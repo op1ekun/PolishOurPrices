@@ -11,6 +11,7 @@ const filteredAppIds = apps
 
     // https://store.steampowered.com/api/appdetails?appids=57690,57000&filters=price_overview&cc=en
 
+console.log('filteredAppIds', filteredAppIds);
 
 https.get(`https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.join(',')}&filters=price_overview&cc=en`, res => {
     let data = [];
@@ -27,5 +28,7 @@ https.get(`https://store.steampowered.com/api/appdetails?appids=${filteredAppIds
         const appsFr = JSON.parse(Buffer.concat(data).toString());    
         fs.writeFileSync('./price_overview_fr.json', appsFr);    
     });
+  }).on('error', err => {
+    console.log('Error: ', err.message);
   });
 
