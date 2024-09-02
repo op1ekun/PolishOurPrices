@@ -13,7 +13,11 @@ const filteredAppIds = apps
 
 console.log('filteredAppIds', filteredAppIds);
 
-https.get(`https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.join(',')}&filters=price_overview&cc=en`, res => {
+const appDetalUrl = `https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.join(',')}&filters=price_overview&cc=en`
+
+console.log('appdetails url', appDetalUrl);
+
+https.get(appDetalUrl, res => {
     let data = [];
     const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
     console.log('Status Code:', res.statusCode);
