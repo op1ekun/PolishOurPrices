@@ -13,7 +13,7 @@ const filteredAppIds = apps
 
 // console.log('filteredAppIds', filteredAppIds);
 
-const appDetalUrl = `https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.slice(0,999).join(',')}&filters=price_overview&cc=en`
+const appDetalUrl = `https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.slice(0,9999).join(',')}&filters=price_overview&cc=en`
 
 // console.log('appdetails url', appDetalUrl);
 
