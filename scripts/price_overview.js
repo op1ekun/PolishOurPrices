@@ -8,10 +8,18 @@ const APP_LIST = 'GetAppList';
 const APP_DETAILS = 'appdetails';
 const APP_IDS = 'appids';
 
-(() => {
+(async () => {
     const appListUrl = `//api.${BASE_URL}/${APPS}/${APP_LIST}/v2/`;
 
-    fetch(appListUrl, { mode: 'no-cors' })
-        .then(response => response.json())
-        .then((apps) => console.log('apps count', apps?.applist?.length));
+    try {
+        const response = await fetch(appListUrl);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+    
+        const apps = await response.json();
+        console.log('apps count', apps?.applist?.length);
+    } catch (error) {
+        console.error(error.message);
+    }
 })()
