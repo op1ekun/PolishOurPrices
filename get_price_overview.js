@@ -11,11 +11,11 @@ const filteredAppIds = apps
 
     // https://store.steampowered.com/api/appdetails?appids=57690,57000&filters=price_overview&cc=en
 
-console.log('filteredAppIds', filteredAppIds);
+// console.log('filteredAppIds', filteredAppIds);
 
-const appDetalUrl = `https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.join(',')}&filters=price_overview&cc=en`
+const appDetalUrl = `https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.slice(0,999).join(',')}&filters=price_overview&cc=en`
 
-console.log('appdetails url', appDetalUrl);
+// console.log('appdetails url', appDetalUrl);
 
 https.get(appDetalUrl, res => {
     let data = [];
