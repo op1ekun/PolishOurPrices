@@ -36,7 +36,7 @@ Object.keys(currencyToCountry).forEach((currency) => {
         .reduce((chain, appIds) => {
             return chain.then((partial) => {
                 return new Promise((resolve) => {
-                    https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.slice(0, LIMIT-1).join(',')}&filters=price_overview&cc=${country}`, res => {
+                    https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.slice(0, requestLimit-1).join(',')}&filters=price_overview&cc=${country}`, res => {
                         let data = [];
                         console.log(currency);
                         const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
