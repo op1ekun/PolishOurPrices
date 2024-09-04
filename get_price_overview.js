@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs');
 const { applist: { apps } } = require('./applist.json');
 
-const requestLimit = 1000;
+const requestLimit = 500;
 let appIdsIndex = 0;
 
 const filteredAppIds = apps
@@ -58,7 +58,7 @@ const getPriceOverview = (country, currency) => {
         });
     }, Promise.resolve({}))
     .then((result) => {
-        console.log('result', result);
+        // console.log('result', result);
         fs.writeFileSync(`./price_overview_${currency}.json`, JSON.stringify(result));
     });
 }
