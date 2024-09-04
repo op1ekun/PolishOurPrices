@@ -2,7 +2,6 @@ const https = require('https');
 const fs = require('fs');
 const { applist: { apps } } = require('./applist.json');
 
-
 const requestLimit = 1000;
 const appIdsIndex = 0;
 
@@ -23,14 +22,24 @@ const filteredAppIds = apps
         return arr;
     }, []);
 
+const currencyToCountry = {
+    'PLN': 'pl',
+    'EUR': 'de',
+    'GBP': 'gb',
+    'NOK': 'no',
+    'USD': 'en'
+};
+
+Object.keys(currencyToCountry).forEach((currency) => {
+    const country = currencyToCountry[currency];
+
     filteredAppIds
         .reduce((chain, appIds) => {
             return chain.then((partial) => {
                 return new Promise((resolve) => {
-                    console.log("processing", appIds.join(","));
-
-                    https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.join(',')}&filters=price_overview&cc=fr`, res => {
+                    https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.slice(0, LIMIT-1).join(',')}&filters=price_overview&cc=${country}`, res => {
                         let data = [];
+                        console.log(currency);
                         const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
                         console.log('Status Code:', res.statusCode);
                         console.log('Date in Response header:', headerDate);
@@ -42,7 +51,6 @@ const filteredAppIds = apps
                         res.on('end', () => {
                             console.log('Response ended: ');
                             const appsFr = JSON.parse(Buffer.concat(data).toString());    
-                            // fs.writeFileSync('./price_overview_fr.json', appsFr);
                             resolve({
                                 ...partial,
                                 ...appsFr
@@ -54,5 +62,6 @@ const filteredAppIds = apps
     }, Promise.resolve({}))
     .then((result) => {
         console.log("result", result);
-        fs.writeFileSync('./price_overview_fr.json', JSON.stringify(result));
+        fs.writeFileSync(`./price_overview_${currency}.json`, JSON.stringify(result));
     });
+});
