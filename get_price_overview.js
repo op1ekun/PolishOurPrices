@@ -29,6 +29,40 @@ const currencyToCountry = {
     'USD': 'en'
 };
 
+const getPriceOverview = (country, currency) => {
+    return [ filteredAppIds[0], filteredAppIds[1] ]
+        .reduce((chain, appIds) => {
+            return chain.then((partial) => {
+                return new Promise((resolve) => {
+                    https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.join(',')}&filters=price_overview&cc=${country}`, res => {
+                        let data = [];
+                        console.log(currency);
+                        const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
+                        console.log('Status Code:', res.statusCode);
+                        console.log('Date in Response header:', headerDate);
+
+                        res.on('data', chunk => {
+                            data.push(chunk);
+                        });
+
+                        res.on('end', () => {
+                            console.log('Response ended: ');
+                            const appsFr = JSON.parse(Buffer.concat(data).toString());    
+                            resolve({
+                                ...partial,
+                                ...appsFr
+                            });
+                        });
+                    });
+            });
+        });
+    }, Promise.resolve({}))
+    .then((result) => {
+        console.log('result', result);
+        fs.writeFileSync(`./price_overview_${currency}.json`, JSON.stringify(result));
+    });
+}
+
 Object.keys(currencyToCountry).forEach(async (currency) => {
     const country = currencyToCountry[currency];
 
@@ -66,38 +100,3 @@ Object.keys(currencyToCountry).forEach(async (currency) => {
     //     fs.writeFileSync(`./price_overview_${currency}.json`, JSON.stringify(result));
     // });
 });
-
-const getPriceOverview = (country, currency) => {
-    return [ filteredAppIds[0], filteredAppIds[1] ]
-        .reduce((chain, appIds) => {
-            return chain.then((partial) => {
-                return new Promise((resolve) => {
-                    https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.join(',')}&filters=price_overview&cc=${country}`, res => {
-                        let data = [];
-                        console.log(currency);
-                        const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
-                        console.log('Status Code:', res.statusCode);
-                        console.log('Date in Response header:', headerDate);
-
-                        res.on('data', chunk => {
-                            data.push(chunk);
-                        });
-
-                        res.on('end', () => {
-                            console.log('Response ended: ');
-                            const appsFr = JSON.parse(Buffer.concat(data).toString());    
-                            resolve({
-                                ...partial,
-                                ...appsFr
-                            });
-                        });
-                    });
-            });
-        });
-    }, Promise.resolve({}))
-    .then((result) => {
-        console.log('result', result);
-        fs.writeFileSync(`./price_overview_${currency}.json`, JSON.stringify(result));
-    });
-
-}
