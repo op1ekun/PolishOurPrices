@@ -63,10 +63,14 @@ const getPriceOverview = (country, currency) => {
     });
 }
 
-Object.keys(currencyToCountry).forEach(async (currency) => {
-    const country = currencyToCountry[currency];
+// Object.keys(currencyToCountry).forEach(async (currency) => {
+//     const country = currencyToCountry[currency];
 
-    await getPriceOverview(country, currency);
+    getPriceOverview('pl', 'PLN')
+        .then(() => getPriceOverview('de', 'EUR'))
+        .then(() => getPriceOverview('gb', 'GBP'))
+        .then(() => getPriceOverview('no', 'NOK'))
+        .then(() => getPriceOverview('en', 'USD'));
 
     // [ filteredAppIds[0] ]
     //     .reduce((chain, appIds) => {
@@ -99,4 +103,4 @@ Object.keys(currencyToCountry).forEach(async (currency) => {
     //     console.log("result", result);
     //     fs.writeFileSync(`./price_overview_${currency}.json`, JSON.stringify(result));
     // });
-});
+// });
