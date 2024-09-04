@@ -36,7 +36,7 @@ const getPriceOverview = (country, currency) => {
                 new Promise((resolve) => {
                     https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.join(',')}&filters=price_overview&cc=${country}`, res => {
                         let data = [];
-                        console.log(currency);
+                        console.log('retrieving', currency);
                         const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
                         console.log('Status Code:', res.statusCode);
                         console.log('Date in Response header:', headerDate);
@@ -63,6 +63,7 @@ Object.keys(currencyToCountry).reduce((chain, currency) => {
 
     return chain.then((overview) =>
         getPriceOverview(country, currency).then((result) => {
+            console.log('currency', currency);
             Object.keys(result).forEach((appId) => {
                 if (
                     result[appId] &&
