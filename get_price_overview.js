@@ -3,12 +3,11 @@ const fs = require('fs');
 const { applist: { apps } } = require('./applist.json');
 
 const requestLimit = 1000;
-const appIdsIndex = 0;
+let appIdsIndex = 0;
 
 const filteredAppIds = apps
     .filter(app => app.name && !app.name.match(/(^test)|(\s+test\s+)/))
     .reduce((arr, { appid }) => {
-        console.log(arr);
         if (!arr[appIdsIndex]) {
             arr[appIdsIndex] = [];
         }
