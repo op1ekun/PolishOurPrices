@@ -2,38 +2,57 @@ const https = require('https');
 const fs = require('fs');
 const { applist: { apps } } = require('./applist.json');
 
+
+const requestLimit = 1000;
+const appIdsIndex = 0;
+
 const filteredAppIds = apps
     .filter(app => app.name && !app.name.match(/(^test)|(\s+test\s+)/))
-    .reduce((acc, { appid }) => {
-        acc.push(appid);
-        return acc;
+    .reduce((arr, { appid }) => {
+        console.log(arr);
+        if (!arr[appIdsIndex]) {
+            arr[appIdsIndex] = [];
+        }
+      
+        if (arr[appIdsIndex].length === requestLimit) {
+            appIdsIndex++;
+            arr[appIdsIndex] = [];
+        }
+        arr[appIdsIndex].push(appid);
+      
+        return arr;
     }, []);
 
-    // https://store.steampowered.com/api/appdetails?appids=57690,57000&filters=price_overview&cc=en
+    filteredAppIds
+        .reduce((chain, appIds) => {
+            return chain.then((partial) => {
+                return new Promise((resolve) => {
+                    console.log("processing", appIds.join(","));
 
-const LIMIT = 1000;
-console.log('filteredAppIds request count', filteredAppIds.length / LIMIT);
+                    https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.join(',')}&filters=price_overview&cc=fr`, res => {
+                        let data = [];
+                        const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
+                        console.log('Status Code:', res.statusCode);
+                        console.log('Date in Response header:', headerDate);
 
-const appDetalUrl = `https://store.steampowered.com/api/appdetails?appids=${filteredAppIds.slice(0,LIMIT - 1).join(',')}&filters=price_overview&cc=en`
+                        res.on('data', chunk => {
+                            data.push(chunk);
+                        });
 
-// console.log('appdetails url', appDetalUrl);
-
-https.get(appDetalUrl, res => {
-    let data = [];
-    const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
-    console.log('Status Code:', res.statusCode);
-    console.log('Date in Response header:', headerDate);
-  
-    res.on('data', chunk => {
-        data.push(chunk);
+                        res.on('end', () => {
+                            console.log('Response ended: ');
+                            const appsFr = JSON.parse(Buffer.concat(data).toString());    
+                            // fs.writeFileSync('./price_overview_fr.json', appsFr);
+                            resolve({
+                                ...partial,
+                                ...appsFr
+                            });
+                        });
+                    });
+            });
+        });
+    }, Promise.resolve({}))
+    .then((result) => {
+        console.log("result", result);
+        fs.writeFileSync('./price_overview_fr.json', JSON.stringify(result));
     });
-  
-    res.on('end', () => {
-        console.log('Response ended: ');
-        // const appsFr = JSON.parse(Buffer.concat(data).toString());    
-        fs.writeFileSync('./price_overview_fr.json', Buffer.concat(data).toString());    
-    });
-  }).on('error', err => {
-    console.log('Error: ', err.message);
-  });
-
