@@ -82,6 +82,7 @@ Object.keys(currencyToCountry).reduce((chain, currency) => {
                 }
             });
 
+            console.log('overview', overview);
             return overview;
         }));
 }, Promise.resolve({}))
