@@ -62,7 +62,7 @@ Object.keys(currencyToCountry).reduce((chain, currency) => {
     const country = currencyToCountry[currency];
 
     return chain.then((overview) =>
-        getPriceOverview(currency, country).then((result) => {
+        getPriceOverview(country, currency).then((result) => {
             Object.keys(result).forEach((appId) => {
                 if (
                     result[appId] &&
@@ -80,6 +80,8 @@ Object.keys(currencyToCountry).reduce((chain, currency) => {
                     };
                 }
             });
+
+            return overview;
         }));
 }, Promise.resolve({}))
     .then((overview) => {
