@@ -14,7 +14,6 @@ const currencyToCountry = {
 
 const getPriceOverview = (country, currency, allAppIds) => [ allAppIds[0] ].reduce((chain, appIds, index) => {
     const requestCount = allAppIds.length;
-    console.log('***', 'retrieving', requestCount, currency);
 
     return chain.then((partial) =>
         new Promise((resolve) => {
@@ -49,7 +48,6 @@ new Promise((resolve) => {
     https.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/', res => {
         let data = [];
         res.on('data', chunk => {
-            console.log('***', 'applist chunk', chunk);
             data.push(chunk);
         });
         res.on('end', () => {
@@ -69,8 +67,7 @@ new Promise((resolve) => {
                     appNameById[appid] = name;
                 }
             }
-            
-            console.log('***', 'applist', filteredAppIds.length, Object.keys(appNameById).length);
+
             resolve({
                 filteredAppIds,
                 appNameById
