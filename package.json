@@ -1,7 +1,7 @@
 {
-    "name": "PolishOurPrices",
+    "name": "polish-our-prices",
     "version": "0.0.1",
     "scripts": {
-        "build": "node get_price_overview.js"
+        "build": "node ./build/create_price_overview.js"
     }
 }
