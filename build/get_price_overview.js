@@ -1,6 +1,6 @@
 const https = require('https');
 
-const getPriceOverview = (country, currency, allAppIds) => [ allAppIds[0], allAppIds[1] ].reduce((chain, appIds, index) => {
+const getPriceOverview = (country, currency, allAppIds) => allAppIds.reduce((chain, appIds, index) => {
     const requestCount = allAppIds.length;
 
     return chain.then((partial) =>
