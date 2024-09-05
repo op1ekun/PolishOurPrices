@@ -75,36 +75,35 @@ new Promise((resolve) => {
         appNameById
     });
 })
-.then(({ filteredAppIds, appNameById }) => {
-    Object.keys(currencyToCountry).reduce((chain, currency) => {
-        const country = currencyToCountry[currency];
-    
-        return chain.then((overview) =>
-            getPriceOverview(country, currency, filteredAppIds).then((result) => {
-                Object.keys(result).forEach((appId) => {
-                    if (
-                        result[appId] &&
-                        result[appId].success &&
-                        !Array.isArray(result[appId].data)
-                    ) {
-                        if (!overview[appId]) {
-                            overview[appId] = {
-                                name: appNameById[appId],
-                                priceOverview: {},
-                            };
-                        }
-                    
-                        overview[appId].priceOverview = {
-                            ...overview[appId].priceOverview,
-                            [currency]: result[appId].data.price_overview,
+.then(({ filteredAppIds, appNameById }) => Object.keys(currencyToCountry).reduce((chain, currency) => {
+    const country = currencyToCountry[currency];
+
+    return chain.then((overview) =>
+        getPriceOverview(country, currency, filteredAppIds).then((result) => {
+            Object.keys(result).forEach((appId) => {
+                if (
+                    result[appId] &&
+                    result[appId].success &&
+                    !Array.isArray(result[appId].data)
+                ) {
+                    if (!overview[appId]) {
+                        overview[appId] = {
+                            name: appNameById[appId],
+                            priceOverview: {},
                         };
                     }
-                });
-    
-                return overview;
-            }));
+                
+                    overview[appId].priceOverview = {
+                        ...overview[appId].priceOverview,
+                        [currency]: result[appId].data.price_overview,
+                    };
+                }
+            });
+
+            return overview;
+        }));
     }, Promise.resolve({}))
-})
+)
 .then((overview) => {
     fs.writeFileSync(`./price_overview.json`, JSON.stringify(overview));
     // test static API capabilities
