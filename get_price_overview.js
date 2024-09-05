@@ -56,10 +56,9 @@ new Promise((resolve) => {
         });
         res.on('end', () => {
             console.log('All data chunks received for applist');
-            const applist = JSON.parse(Buffer.concat(data).toString());
-            console.log('***', 'app 0', applist[0]);
-            for (let i = 0; i < applist.length; i++) {
-                const { appid, name } = applist[i];
+            const { applist : { apps }} = JSON.parse(Buffer.concat(data).toString());
+            for (let i = 0; i < apps.length; i++) {
+                const { appid, name } = apps[i];
                 if (name && !name.match(/(^test)|(\s+test\s+)/)) {
                     if (!filteredAppIds[appIdsIndex]) {
                         filteredAppIds[appIdsIndex] = [];
