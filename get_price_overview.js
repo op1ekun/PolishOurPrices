@@ -51,8 +51,9 @@ new Promise((resolve) => {
             data.push(chunk);
         });
         res.on('end', () => {
-            for (let i = 0; i < data.length; i++) {
-                const { appid, name } = data[i];
+            const applist = JSON.parse(Buffer.concat(data).toString());
+            for (let i = 0; i < applist.length; i++) {
+                const { appid, name } = applist[i];
                 if (name && !name.match(/(^test)|(\s+test\s+)/)) {
                     if (!filteredAppIds[appIdsIndex]) {
                         filteredAppIds[appIdsIndex] = [];
