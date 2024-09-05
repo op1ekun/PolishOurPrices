@@ -47,11 +47,18 @@ new Promise((resolve) => {
 
     https.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/', res => {
         let data = [];
+
+        console.log('Status Code:', res.statusCode);
+        const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
+        console.log('Date in Response header:', headerDate);
+        
         res.on('data', chunk => {
             data.push(chunk);
         });
         res.on('end', () => {
+            console.log('Response ended: ');
             const applist = JSON.parse(Buffer.concat(data).toString());
+            console.log('***', 'applist', applist);
             for (let i = 0; i < applist.length; i++) {
                 const { appid, name } = applist[i];
                 if (name && !name.match(/(^test)|(\s+test\s+)/)) {
