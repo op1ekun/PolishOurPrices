@@ -49,6 +49,7 @@ new Promise((resolve) => {
     https.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/', res => {
         let data = [];
         res.on('data', chunk => {
+            console.log('***', 'applist chunk', chunk);
             data.push(chunk);
         });
         res.on('end', () => {
@@ -68,13 +69,13 @@ new Promise((resolve) => {
                     appNameById[appid] = name;
                 }
             }
+            
+            console.log('***', 'applist', filteredAppIds.length, Object.keys(appNameById).length);
+            resolve({
+                filteredAppIds,
+                appNameById
+            });
         })
-    });
-
-    console.log('***', 'applist', filteredAppIds.length, Object.keys(appNameById).length);
-    resolve({
-        filteredAppIds,
-        appNameById
     });
 })
 .then(({ filteredAppIds, appNameById }) => Object.keys(currencyToCountry).reduce((chain, currency) => {
