@@ -42,9 +42,3 @@ getApplist()
     fs.writeFileSync(`./api/index.json`, JSON.stringify(overview));
     console.log('Writing overview - finished');
 })
-
-
-
-
-
-

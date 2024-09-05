@@ -6,4 +6,4 @@ const currencyToCountry = {
     'USD': 'en'
 };
 
-exports =  { currencyToCountry };
+module.exports =  { currencyToCountry };

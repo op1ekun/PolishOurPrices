@@ -1,3 +1,5 @@
+const https = require('https');
+
 const getApplist = () => new Promise((resolve) => {
     const requestLimit = 1000;
     let filteredAppIds = [];
