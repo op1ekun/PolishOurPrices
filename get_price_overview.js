@@ -9,7 +9,7 @@ const currencyToCountry = {
     'USD': 'en'
 };
 
-const getPriceOverview = (country, currency, allAppIds) => [ allAppIds[0] ].reduce((chain, appIds, index) => {
+const getPriceOverview = (country, currency, allAppIds) => [ allAppIds[0], allAppIds[1] ].reduce((chain, appIds, index) => {
     const requestCount = allAppIds.length;
 
     return chain.then((partial) =>
@@ -81,8 +81,6 @@ new Promise((resolve) => {
     });
 })
 .then(({ filteredAppIds, appNameById }) => {
-    console.log('***', filteredAppIds, appNameById);
-
     return Object.keys(currencyToCountry).reduce((chain, currency) => {
         const country = currencyToCountry[currency];
 
@@ -114,10 +112,11 @@ new Promise((resolve) => {
 
 })
 .then((overview) => {
-    console.log('***', 'writing overview');
+    console.log('Writing overview');
     fs.writeFileSync(`./price_overview.json`, JSON.stringify(overview));
     // test static API capabilities
     fs.writeFileSync(`./index.json`, JSON.stringify(overview));
+    console.log('Writing overview - finished');
 })
 
 
