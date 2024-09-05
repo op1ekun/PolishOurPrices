@@ -71,6 +71,7 @@ new Promise((resolve) => {
         })
     });
 
+    console.log('***', 'applist', filteredAppIds.length, Object.keys(appNameById).length);
     resolve({
         filteredAppIds,
         appNameById
