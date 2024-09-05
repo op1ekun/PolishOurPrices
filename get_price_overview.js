@@ -56,9 +56,8 @@ new Promise((resolve) => {
             data.push(chunk);
         });
         res.on('end', () => {
-            console.log('Response ended: ');
+            console.log('Response ended: ', res.statusCode);
             const applist = JSON.parse(Buffer.concat(data).toString());
-            console.log('***', 'applist', applist);
             for (let i = 0; i < applist.length; i++) {
                 const { appid, name } = applist[i];
                 if (name && !name.match(/(^test)|(\s+test\s+)/)) {
@@ -82,35 +81,39 @@ new Promise((resolve) => {
         })
     });
 })
-.then(({ filteredAppIds, appNameById }) => Object.keys(currencyToCountry).reduce((chain, currency) => {
-    const country = currencyToCountry[currency];
+.then(({ filteredAppIds, appNameById }) => {
+    console.log('***', filteredAppIds, appIdsIndex);
 
-    return chain.then((overview) =>
-        getPriceOverview(country, currency, filteredAppIds).then((result) => {
-            Object.keys(result).forEach((appId) => {
-                if (
-                    result[appId] &&
-                    result[appId].success &&
-                    !Array.isArray(result[appId].data)
-                ) {
-                    if (!overview[appId]) {
-                        overview[appId] = {
-                            name: appNameById[appId],
-                            priceOverview: {},
+    return Object.keys(currencyToCountry).reduce((chain, currency) => {
+        const country = currencyToCountry[currency];
+
+        return chain.then((overview) =>
+            getPriceOverview(country, currency, filteredAppIds).then((result) => {
+                Object.keys(result).forEach((appId) => {
+                    if (
+                        result[appId] &&
+                        result[appId].success &&
+                        !Array.isArray(result[appId].data)
+                    ) {
+                        if (!overview[appId]) {
+                            overview[appId] = {
+                                name: appNameById[appId],
+                                priceOverview: {},
+                            };
+                        }
+                    
+                        overview[appId].priceOverview = {
+                            ...overview[appId].priceOverview,
+                            [currency]: result[appId].data.price_overview,
                         };
                     }
-                
-                    overview[appId].priceOverview = {
-                        ...overview[appId].priceOverview,
-                        [currency]: result[appId].data.price_overview,
-                    };
-                }
-            });
+                });
 
-            return overview;
-        }));
-    }, Promise.resolve({}))
-)
+                return overview;
+            }));
+        }, Promise.resolve({}));
+
+})
 .then((overview) => {
     console.log('***', 'writing overview');
     fs.writeFileSync(`./price_overview.json`, JSON.stringify(overview));
