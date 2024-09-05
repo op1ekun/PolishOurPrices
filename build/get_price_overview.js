@@ -28,4 +28,4 @@ const getPriceOverview = (country, currency, allAppIds) => [ allAppIds[0], allAp
     
 }, Promise.resolve({}));
 
-exports = { getPriceOverview };
+module.exports = { getPriceOverview };
