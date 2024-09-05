@@ -44,4 +44,4 @@ const getApplist = () => new Promise((resolve) => {
     });
 });
 
-exports = { getApplist };
+module.exports = { getApplist };
