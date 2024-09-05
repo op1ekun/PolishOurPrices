@@ -1,9 +1,6 @@
 const https = require('https');
 const fs = require('fs');
 
-const requestLimit = 1000;
-let appIdsIndex = 0;
-
 const currencyToCountry = {
     'PLN': 'pl',
     'EUR': 'de',
@@ -19,7 +16,6 @@ const getPriceOverview = (country, currency, allAppIds) => [ allAppIds[0] ].redu
         new Promise((resolve) => {
             https.get(`https://store.steampowered.com/api/appdetails?appids=${appIds.join(',')}&filters=price_overview&cc=${country}`, res => {
                 let data = [];
-                console.log(`retrieved price overview partial ${index + 1}/${requestCount} for ${currency}`);
                 const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
                 console.log('Status Code:', res.statusCode);
                 console.log('Date in Response header:', headerDate);
@@ -29,7 +25,7 @@ const getPriceOverview = (country, currency, allAppIds) => [ allAppIds[0] ].redu
                 });
 
                 res.on('end', () => {
-                    console.log('Response ended: ');
+                    console.log(`All data chunks received for partial ${index + 1}/${requestCount} for ${currency}`);
                     const appsFr = JSON.parse(Buffer.concat(data).toString());    
                     resolve({
                         ...partial,
@@ -41,9 +37,12 @@ const getPriceOverview = (country, currency, allAppIds) => [ allAppIds[0] ].redu
     
 }, Promise.resolve({}));
 
+// API chain begins
 new Promise((resolve) => {
+    const requestLimit = 1000;
     let filteredAppIds = [];
     let appNameById = {};
+    let appIdsIndex = 0;
 
     https.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/', res => {
         let data = [];
@@ -56,8 +55,9 @@ new Promise((resolve) => {
             data.push(chunk);
         });
         res.on('end', () => {
-            console.log('Response ended: ', res.statusCode);
+            console.log('All data chunks received for applist');
             const applist = JSON.parse(Buffer.concat(data).toString());
+            console.log('***', 'app 0', applist[0]);
             for (let i = 0; i < applist.length; i++) {
                 const { appid, name } = applist[i];
                 if (name && !name.match(/(^test)|(\s+test\s+)/)) {
@@ -82,7 +82,7 @@ new Promise((resolve) => {
     });
 })
 .then(({ filteredAppIds, appNameById }) => {
-    console.log('***', filteredAppIds, appIdsIndex);
+    console.log('***', filteredAppIds, appNameById);
 
     return Object.keys(currencyToCountry).reduce((chain, currency) => {
         const country = currencyToCountry[currency];
