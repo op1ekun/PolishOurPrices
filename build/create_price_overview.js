@@ -37,7 +37,7 @@ getApplist()
 )
 .then((overview) => {
     console.log('Writing overview');
-    fs.writeFileSync(`./price_overview.json`, JSON.stringify(overview));
+    // fs.writeFileSync(`./price_overview.json`, JSON.stringify(overview));
     // test static API capabilities
     fs.writeFileSync(`./api/index.json`, JSON.stringify(overview));
     console.log('Writing overview - finished');

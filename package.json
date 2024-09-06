@@ -2,6 +2,6 @@
     "name": "polish-our-prices",
     "version": "0.0.1",
     "scripts": {
-        "build": "node ./build/create_price_overview.js"
+        "build": "node ./build/create_endpoints.js"
     }
 }
