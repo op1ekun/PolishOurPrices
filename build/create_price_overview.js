@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { getApplist } = require('./get_applist');
 const { getPriceOverview } = require('./get_price_overview');
-const { currencyToCountry } = require('./currency_to_country');
+const { currencyToCountry } = require('./constants');
 
 getApplist()
 .then(({ filteredAppIds, appNameById }) => Object.keys(currencyToCountry)

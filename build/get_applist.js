@@ -1,7 +1,7 @@
 const https = require('https');
+const { appIdsPerRequestLimit } = require('./constants');
 
 const getApplist = () => new Promise((resolve) => {
-    const requestLimit = 1000;
     let filteredAppIds = [];
     let appNameById = {};
     let appIdsIndex = 0;
@@ -28,7 +28,7 @@ const getApplist = () => new Promise((resolve) => {
                     }
                     
                     // package app ids by request limit (one request can process ~1000 ids at once)
-                    if (filteredAppIds[appIdsIndex].length === requestLimit) {
+                    if (filteredAppIds[appIdsIndex].length === appIdsPerRequestLimit) {
                         appIdsIndex++;
                         filteredAppIds[appIdsIndex] = [];
                     }
