@@ -31,7 +31,7 @@ const findNotPolished = (eurFx, priceOverview, percentThreshold, monetaryThresho
 }, {});
 
 const getNotPolished = (priceOverview) => new Promise((resolve) => {
-    https.get('https://api.nbp.pl/api/exchangerates/tables/A/today/?format=json', res => {
+    https.get('https://api.nbp.pl/api/exchangerates/tables/A/last/?format=json', res => {
         let data = [];
     
         res.on('data', (chunk) => {
