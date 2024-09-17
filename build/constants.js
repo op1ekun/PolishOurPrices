@@ -3,7 +3,8 @@ const currencyToCountry = {
     'EUR': 'de',
     'GBP': 'gb',
     'NOK': 'no',
-    'USD': 'en'
+    'USD': 'en',
+    'CHF': 'ch'
 };
 
 // 5%
